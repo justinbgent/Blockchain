@@ -94,11 +94,17 @@ class Blockchain(object):
 
     @staticmethod
     def valid_proof(block_string, proof):
+        #block_string = json.dumps(block, sort_keys=True)
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         return guess_hash[:6] == "000000"
         # return True or False
+
+        #if guess_hash[:6] == "000000":
+        #    return proof
+        #else:
+        #    return None
 
 
 # Instantiate our Node
@@ -117,12 +123,12 @@ def mine():
     guess = data['proof']
     user_id = data['id']
     if user_id == None:
-        return jsonify({'message': 'Need user ID'}), 201
+        return jsonify({'message': 'Need user ID'}), 400
     # Run the proof of work algorithm to get the next proof
     proof = blockchain.proof_of_work(blockchain.last_block, guess)
 
     if proof == None:
-        return jsonify({'message': 'Incorrect Solution'}), 201
+        return jsonify({'message': 'Incorrect Solution'}), 400
 
     # Forge the new Block by adding it to the chain with the proof
     previous_hash = blockchain.hash(blockchain.last_block)
