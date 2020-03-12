@@ -12,6 +12,7 @@ class Blockchain(object):
     def __init__(self):
         self.chain = []
         self.current_transactions = []
+        self.transactions = []
 
         # Create the genesis block
         self.new_block(previous_hash=1, proof=100)
@@ -50,6 +51,9 @@ class Blockchain(object):
             'previous_hash': previous_hash or self.hash(self.last_block)
         }
 
+        # Add to transaction history
+        for action in self.current_transactions:
+            self.transactions.append(action)
         # Reset the current list of transactions
         self.current_transactions = []
         # Append the block to the chain
@@ -171,6 +175,13 @@ def full_chain():
 def last_block():
     response = {
         'last_block': blockchain.last_block
+    }
+    return jsonify(response), 200
+
+@app.route('/transactions', methods=['GET'])
+def return_transactions():
+    response = {
+        'transactions': blockchain.transactions
     }
     return jsonify(response), 200
 
